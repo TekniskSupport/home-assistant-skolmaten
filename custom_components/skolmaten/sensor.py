@@ -30,21 +30,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     devices = [];
 
     for sensor in sensors:
-        school  = [];
-        page = requests.get('https://skolmaten.se/' + sensor['school'] + '/rss/weeks/?offset=0')
-        soup = BeautifulSoup(page.content, "html.parser")
-        for item in soup.select('item'):
-            day   = item.select('title')[0].text.strip()
-            food  = item.select('description')[0].text.strip()
-            date  = item.select('pubDate')[0].text
-            school.append({
-                'day' : day,
-                'date': date,
-                'food': food
-            });
-            _LOGGER.error(school)
-        _LOGGER.error(sensor)
-        devices.append(SkolmatenSensor(sensor['school'], sensor, school, hass))
+        devices.append(SkolmatenSensor(sensor['school'], sensor, hass))
     add_devices(devices, True)
 
 # pylint: disable=no-member
@@ -54,14 +40,13 @@ class SkolmatenSensor(Entity):
     page = ""
     updatedAt = datetime.now().timestamp()
 
-    def __init__(self, name, sensor, data, hass, day=0):
+    def __init__(self, name, sensor, hass, day=0):
         """Initialize a Skolmaten sensor."""
         self._item       = sensor
         self._school     = sensor['school']
-        self._items      = data
         self._name       = "skolmaten {}".format(name)
         self._entity_id  = generate_entity_id(ENTITY_ID_FORMAT, self._name, hass=hass)
-        self._attributes = data
+        self._attributes = None
         self._result     = None
 
     @property

@@ -11,16 +11,13 @@ from homeassistant.components.sensor import PLATFORM_SCHEMA, ENTITY_ID_FORMAT
 from homeassistant.const import (CONF_NAME)
 
 _LOGGER = logging.getLogger(__name__)
-
 DEFAULT_NAME       = 'Skolmaten'
 CONF_SENSORS       = 'sensors'
-
 SENSOR_OPTIONS = {
     'school': ('Skola')
 }
 
 SCAN_INTERVAL = timedelta(hours=4)
-
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
     vol.Required(CONF_SENSORS, default=[]): vol.Optional(cv.ensure_list, [vol.In(SENSOR_OPTIONS)]),
@@ -34,9 +31,9 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
     for sensor in sensors:
         school  = [];
-        page =requests.get('https://skolmaten.se/' + sensor['school'] + '/rss/weeks/?offset=0')
+        page = requests.get('https://skolmaten.se/' + sensor['school'] + '/rss/weeks/?offset=0')
         soup = BeautifulSoup(page.content, "html.parser")
-        for days in soup.select('item'):
+        for item in soup.select('item'):
             day   = item.select('title')[0].text.strip()
             food  = item.select('description')[0].text.strip()
             date  = item.select('pubDate')[0].text
@@ -45,6 +42,8 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
                 'date': date,
                 'food': food
             });
+            _LOGGER.error(school)
+        _LOGGER.error(sensor)
         devices.append(SkolmatenSensor(sensor['school'], sensor, school, hass))
     add_devices(devices, True)
 
@@ -59,9 +58,7 @@ class SkolmatenSensor(Entity):
         """Initialize a Skolmaten sensor."""
         self._item       = sensor
         self._school     = sensor['school']
-        self._food       = data['name']
-        self._day        = data['day']
-        self._date       = data['date']
+        self._items      = data
         self._name       = "skolmaten {}".format(name)
         self._entity_id  = generate_entity_id(ENTITY_ID_FORMAT, self._name, hass=hass)
         self._attributes = data
@@ -107,9 +104,8 @@ class SkolmatenSensor(Entity):
             SkolmatenSensor.updatedAt = datetime.now().timestamp()
         self._result     = BeautifulSoup(SkolmatenSensor.page.content, "html.parser")
         self._attributes = {}
-
-        soup = BeautifulSoup(page.content, "html.parser")
-        for days in soup.select('item'):
+        school = []
+        for item in self._result.select('item'):
             day   = item.select('title')[0].text.strip()
             food  = item.select('description')[0].text.strip()
             date  = item.select('pubDate')[0].text
@@ -119,6 +115,4 @@ class SkolmatenSensor(Entity):
                 'food': food
             });
         self._state = sys.getsizeof(school)
-        self._attributes.update({"day": day})
-        self._attributes.update({"date": date})
-        self._attributes.update({"food": food})
+        self._attributes.update({"entries": school})

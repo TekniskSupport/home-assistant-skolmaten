@@ -23,7 +23,6 @@ SCAN_INTERVAL = timedelta(hours=4)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    vol.Optional(CONF_VALUE_AS_TEXT, default=False): cv.boolean,
     vol.Required(CONF_SENSORS, default=[]): vol.Optional(cv.ensure_list, [vol.In(SENSOR_OPTIONS)]),
 })
 
@@ -58,7 +57,6 @@ class SkolmatenSensor(Entity):
 
     def __init__(self, name, sensor, data, hass, day=0):
         """Initialize a Skolmaten sensor."""
-        self._textValue  = textValue
         self._item       = sensor
         self._school     = sensor['school']
         self._food       = data['name']

@@ -1,0 +1,9 @@
+{
+  "domain": "skolmaten",
+  "name": "Skolmaten",
+  "documentation": "",
+  "dependencies": [],
+  "after_dependencies": ["http"],
+  "codeowners": ["@iesus"],
+  "requirements": []
+}

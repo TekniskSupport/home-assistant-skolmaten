@@ -91,13 +91,19 @@ class SkolmatenSensor(Entity):
         self._attributes = {}
         school = []
         for item in self._result.select('item'):
-            day   = item.select('title')[0].text.strip()
-            food  = item.select('description')[0].text.strip()
-            date  = item.select('pubDate')[0].text
+            day        = item.select('title')[0].text.strip()
+            food       = item.select('description')[0].text.strip()
+            date       = item.select('pubDate')[0].text
+            parsedDate = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %Z")
+            todaysFood = "no food found for today"
+            if parsedDate.date() == datetime.today().date():
+                todaysFood = food
+
             school.append({
                 'day' : day,
                 'date': date,
                 'food': food
             });
         self._state = sys.getsizeof(school)
+        self._attributes.update({"todaysFood": todaysFood})
         self._attributes.update({"entries": school})

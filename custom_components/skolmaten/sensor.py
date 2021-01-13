@@ -95,7 +95,9 @@ class SkolmatenSensor(Entity):
             food       = item.select('description')[0].text.strip()
             date       = item.select('pubDate')[0].text
             parsedDate = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %Z")
-            todaysFood = "no food found for today"
+            if "todaysFood" not in vars():
+                todaysFood = "no food found for today"
+
             if parsedDate.date() == datetime.today().date():
                 todaysFood = food
 

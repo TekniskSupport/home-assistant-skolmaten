@@ -36,9 +36,7 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 # pylint: disable=no-member
 class SkolmatenSensor(Entity):
     """Representation of a Skolmaten sensor."""
-
     page = ""
-    updatedAt = datetime.now().timestamp()
 
     def __init__(self, name, sensor, hass, day=0):
         """Initialize a Skolmaten sensor."""
@@ -84,11 +82,9 @@ class SkolmatenSensor(Entity):
 
     def update(self):
         #update values
-        if not SkolmatenSensor.page or (datetime.now().timestamp() - Skolmaten.updatedAt) >= (3600*4):
-            SkolmatenSensor.page      = requests.get('https://skolmaten.se/' + self._school + '/rss/weeks/?offset=0')
-            SkolmatenSensor.updatedAt = datetime.now().timestamp()
-        self._result     = BeautifulSoup(SkolmatenSensor.page.content, "html.parser")
-        self._attributes = {}
+        SkolmatenSensor.page = requests.get('https://skolmaten.se/' + self._school + '/rss/weeks/?offset=0')
+        self._result         = BeautifulSoup(SkolmatenSensor.page.content, "html.parser")
+        self._attributes     = {}
         school = []
         for item in self._result.select('item'):
             day        = item.select('title')[0].text.strip()

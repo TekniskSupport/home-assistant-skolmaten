@@ -12,6 +12,7 @@ from homeassistant.const import (CONF_NAME)
 
 _LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME       = 'Skolmaten'
+CONF_NAME          = 'name'
 CONF_SENSORS       = 'sensors'
 SENSOR_OPTIONS = {
     'school': ('Skola')

@@ -26,9 +26,9 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Set up the Skolmaten sensor."""
-    name    = config.get(CONF_NAME)
-    sensors = config.get(CONF_SENSORS)
-    devices = [];
+    sensor_name = config.get(CONF_NAME)
+    sensors     = config.get(CONF_SENSORS)
+    devices     = [];
 
     for sensor in sensors:
         devices.append(SkolmatenSensor(sensor_name, sensor['school'], sensor, hass))

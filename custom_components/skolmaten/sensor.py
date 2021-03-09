@@ -104,5 +104,6 @@ class SkolmatenSensor(Entity):
                 'food': food
             });
         self._state = sys.getsizeof(school)
-        self._attributes.update({"todaysFood": todaysFood})
+        if "todaysFood" in vars():
+            self._attributes.update({"todaysFood": todaysFood})
         self._attributes.update({"entries": school})

@@ -66,7 +66,7 @@ class SkolmatenSensor(Entity):
         return None
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes of the monitored installation."""
         if self._attributes is not None:
             return self._attributes

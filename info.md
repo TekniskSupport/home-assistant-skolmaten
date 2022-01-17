@@ -24,4 +24,4 @@ To display in lovelace, you can use the custom:list-card with this configuration
     entity:  sensor.skolmaten_ankiborgskolan
     feed_attribute: entries
     title: Matsedel Skolan
-    ```
+  ```

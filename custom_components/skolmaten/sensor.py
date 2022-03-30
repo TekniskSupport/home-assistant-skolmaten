@@ -96,7 +96,9 @@ class SkolmatenSensor(Entity):
                 todaysFood = "no food found for today"
 
             if parsedDate.date() == datetime.today().date():
-                todaysFood = food
+                #todaysFood = food
+                todaysFood = food.split("<br/>", 1)
+                
 
             school.append({
                 'day' : day,

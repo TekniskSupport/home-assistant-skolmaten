@@ -98,7 +98,10 @@ class SkolmatenSensor(Entity):
             if parsedDate.date() == datetime.today().date():
                 #todaysFood = food
                 todaysFood = food.split("<br/>", 1)
-                todaysVegFood = food.split("<br/>", 2)
+                todaysVegFoodTemp = food.split("<br/>", 2)
+
+                if todaysVegFoodTemp == todaysFood:
+                    todaysVegFood = "Inget vegetariskt alternativ idag."
                 
 
             school.append({

@@ -98,6 +98,7 @@ class SkolmatenSensor(Entity):
             if parsedDate.date() == datetime.today().date():
                 #todaysFood = food
                 todaysFood = food.split("<br/>", 1)
+                todaysVegFood = food.split("<br/>", 2)
                 
 
             school.append({
@@ -108,4 +109,5 @@ class SkolmatenSensor(Entity):
         self._state = sys.getsizeof(school)
         if "todaysFood" in vars():
             self._attributes.update({"todaysFood": todaysFood})
+            self._attributes.update({"todaysVegFood": todaysVegFood})
         self._attributes.update({"entries": school})

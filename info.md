@@ -10,6 +10,24 @@ Add the following to resources in your sensors.yaml:
     - school: ankiborgskolan
 ```
 
+
+```yaml
+- platform: skolmaten
+  type: weeks
+  offset: 1
+  sensors:
+    - school: ankiborgskolan
+```
+
+```yaml
+- platform: skolmaten
+  type: days
+  offset: -2
+  limit: 10
+  sensors:
+    - school: ankiborgskolan
+```
+
 Replace ankiborgskolan the actual name in url from skolmaten.se
 
 

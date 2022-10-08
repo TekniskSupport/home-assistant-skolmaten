@@ -2,5 +2,5 @@
   "name": "Skolmaten",
   "country": "SE",
   "domains": ["sensor"],
-  "homeassistant": "2020.12.2"
+  "homeassistant": "2022.10.1"
 }

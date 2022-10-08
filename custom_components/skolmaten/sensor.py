@@ -14,6 +14,9 @@ _LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME       = 'Skolmaten'
 CONF_NAME          = 'name'
 CONF_SENSORS       = 'sensors'
+CONF_OFFSET        = 'offset'
+CONF_LIMIT         = 'limit'
+CONF_TYPE          = 'type'
 SENSOR_OPTIONS = {
     'school': ('Skola')
 }
@@ -21,6 +24,9 @@ SENSOR_OPTIONS = {
 SCAN_INTERVAL = timedelta(hours=4)
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+    vol.Optional(CONF_TYPE, default='weeks'): vol.In(["days", "weeks"]),
+    vol.Optional(CONF_OFFSET, default=0): vol.All(vol.Coerce(int), vol.Range(min=-10, max=10)),
+    vol.Optional(CONF_LIMIT, default=1): cv.positive_int,
     vol.Required(CONF_SENSORS, default=[]): vol.Optional(cv.ensure_list, [vol.In(SENSOR_OPTIONS)]),
 })
 
@@ -28,10 +34,13 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
     """Set up the Skolmaten sensor."""
     sensor_name = config.get(CONF_NAME)
     sensors     = config.get(CONF_SENSORS)
-    devices     = [];
+    type        = config.get(CONF_TYPE)
+    offset      = config.get(CONF_OFFSET)
+    limit       = config.get(CONF_LIMIT)
+    devices     = []
 
     for sensor in sensors:
-        devices.append(SkolmatenSensor(sensor_name, sensor['school'], sensor, hass))
+        devices.append(SkolmatenSensor(sensor_name, sensor['school'], sensor, type, offset, limit, hass))
     add_devices(devices, True)
 
 # pylint: disable=no-member
@@ -39,10 +48,13 @@ class SkolmatenSensor(Entity):
     """Representation of a Skolmaten sensor."""
     page = ""
 
-    def __init__(self, sensor_name, name, sensor, hass, day=0):
+    def __init__(self, sensor_name, name, sensor, type, offset, limit, hass, day=0):
         """Initialize a Skolmaten sensor."""
         self._item       = sensor
         self._school     = sensor['school']
+        self.offset      = offset
+        self.limit       = limit
+        self.type        = type
         self._name       = "{} {}".format(sensor_name, name)
         self._entity_id  = generate_entity_id(ENTITY_ID_FORMAT, self._name, hass=hass)
         self._attributes = None
@@ -83,7 +95,8 @@ class SkolmatenSensor(Entity):
 
     def update(self):
         #update values
-        SkolmatenSensor.page = requests.get('https://skolmaten.se/' + self._school + '/rss/weeks/?offset=0')
+        url = 'https://skolmaten.se/%s/rss/%s/?offset=%d&limit=%d' % (self._school, self.type, self.offset, self.limit)
+        SkolmatenSensor.page = requests.get(url)
         self._result         = BeautifulSoup(SkolmatenSensor.page.content, "html.parser")
         self._attributes     = {}
         school = []

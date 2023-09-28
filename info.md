@@ -1,7 +1,7 @@
 # Skolmaten integration
 
 ## Installation/Configuration:
-Insall the integration and reboot HA to load it.
+Install the integration and reboot HA to load it.
 
 Add the following to resources in your sensors.yaml
 (or under sensor: in your configuration.conf):

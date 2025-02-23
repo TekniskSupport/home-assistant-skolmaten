@@ -1,3 +1,7 @@
+
+# This integration has stopped working. use the one in HACS instead.
+
+
 # Skolmaten integration
 
 ## Installation/Configuration:

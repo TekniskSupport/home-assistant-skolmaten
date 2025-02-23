@@ -1,3 +1,7 @@
+
+# Integration no longer working, use the one default in HACS instead.
+
+
 # Skolmaten
 
 Unfortunately the endpoint has been removed, and thus this integration no longer works.
